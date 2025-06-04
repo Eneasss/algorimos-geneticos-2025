@@ -27,16 +27,18 @@ def mostrar_resul(valor, maximos, minimos, promedios):
 def fitness(valor, ind):
     return valor[ind] / np.sum(valor)
 
+
 def graficar(maximos, minimos, promedios):
     plt.plot(maximos, label='Máximo', color='red')
     plt.plot(minimos, label='Mínimo', color='blue')
     plt.plot(promedios, label='Promedio', color='green')
     plt.xlabel('Corrida')
-    plt.ylabel('Fitness')
-    plt.title('Evolución de fitness')
+    plt.ylabel('Valor func objetivo')
+    plt.title('Evolución de func objetivo')
     plt.legend()
     plt.grid(True)
     plt.show()
+
 
 def main():
     sol = []
@@ -77,12 +79,12 @@ def main():
             else:
                 sol[ind] = valoresTorneo[ind]
                 sol[ind + 1] = valoresTorneo[ind + 1]
-            if random.random() < mut: # De la pareja el primer cromosoma
+            if random.random() < mut:  # De la pareja el primer cromosoma
                 bit = random.randint(0, 29)
                 a = format(sol[ind], 'b').zfill(30)
                 bit_cambiado = '1' if a[bit] == '0' else '0'
                 sol[ind] = int(a[:bit] + bit_cambiado + a[bit + 1:], 2)
-            if random.random() < mut: # De la pareja el segundo cromosoma
+            if random.random() < mut:  # De la pareja el segundo cromosoma
                 bit = random.randint(0, 29)
                 b = format(sol[ind + 1], 'b').zfill(30)
                 bit_cambiado = '1' if b[bit] == '0' else '0'

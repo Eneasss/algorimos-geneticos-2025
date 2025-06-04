@@ -55,6 +55,11 @@ def main():
     print('Valores Corrida: 1\n')
     mostrar_resul(valor, maximos, minimos, promedios)
     for ciclo in range(ciclos - 1):
+        # Guardar mejor individuo
+        individuos = list(zip(sol, valor))
+        individuos.sort(key=lambda x: x[1], reverse=True)  # Ordenar por fitness (valor)
+        elite = [individuos[0], individuos[1]]  # El mejor individuo (mayor valor)
+
         ruleta = []
         ruletaSize = 0
         for ind in range(popul):
@@ -62,9 +67,21 @@ def main():
                 ruleta.append(sol[ind])
                 ruletaSize += 1
         valoresRuleta = []
+
         for ind in range(popul):
             valoresRuleta.append(ruleta[random.randint(0, ruletaSize - 1)])
-        for ind in range(0, popul, 2):
+
+        # Agregar los elite al final y quitar los primeros 2 normales
+        sol.append(elite[0][0])
+        sol.append(elite[1][0])
+        valor.append(elite[0][1])
+        valor.append(elite[1][1])
+        sol.remove(sol[0])
+        sol.remove(sol[0])
+        valor.remove(valor[0])
+        valor.remove(valor[0])
+
+        for ind in range(0, popul - 2, 2):
             if random.random() < cross:
                 corte = random.randint(1, 29)
                 a = format(valoresRuleta[ind], 'b').zfill(30)
