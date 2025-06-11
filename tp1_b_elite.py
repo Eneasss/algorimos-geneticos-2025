@@ -39,6 +39,7 @@ def graficar(maximos, minimos, promedios):
     plt.grid(True)
     plt.show()
 
+
 def inicializar(sol, valor):
     for ind in range(popul):
         sol.append(random.randint(0, coef))
@@ -92,6 +93,14 @@ def mutarHijos(sol, ind):
         sol[ind + 1] = int(b[:bit] + bit_cambiado + b[bit + 1:], 2)
 
 
+def elegirElites(sol, valor):
+    # Guardar mejores individuos
+    individuos = list(zip(sol, valor))
+    individuos.sort(key=lambda x: x[1], reverse=True)  # Ordenar por fitness (valor)
+    elite = [individuos[0], individuos[1]]  # Los 2 mejores (mayor valor)
+    return elite
+
+
 def main():
     sol = []
     valor = []
@@ -105,9 +114,21 @@ def main():
     print('Valores Corrida: 1\n')
     mostrar_resul(valor, maximos, minimos, promedios)
     for ciclo in range(ciclos - 1):
+        elite = elegirElites(sol, valor)
         torneo = generarTorneo(sol)
         padres = seleccionarPadres(torneo)
-        for ind in range(0, popul, 2):
+
+        # Agregar los elite al final y quitar los primeros 2 normales
+        sol.append(elite[0][0])
+        sol.append(elite[1][0])
+        valor.append(elite[0][1])
+        valor.append(elite[1][1])
+        sol.remove(sol[0])
+        sol.remove(sol[0])
+        valor.remove(valor[0])
+        valor.remove(valor[0])
+
+        for ind in range(0, popul - 2, 2):  #No se tienen en cuenta los ultimos 2 que son elite
             cruzarPadres(padres, ind, sol)
             mutarHijos(sol, ind)
             valor[ind] = function(sol[ind])

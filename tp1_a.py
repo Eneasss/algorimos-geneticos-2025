@@ -40,6 +40,59 @@ def graficar(maximos, minimos, promedios):
     plt.show()
 
 
+def inicializar(sol, valor):
+    for ind in range(popul):
+        sol.append(random.randint(0, coef))
+        valor.append(function(sol[ind]))
+
+
+def generarRuleta(sol, valor):
+    ruleta = []
+    ruletaSize = 0
+    for ind in range(popul):
+        for p in range(round(fitness(valor, ind) * 100)):
+            ruleta.append(sol[ind])
+            ruletaSize += 1
+    return ruleta, ruletaSize
+
+
+def seleccionarPadres(ruleta, ruletaSize):
+    padres = []
+    for ind in range(popul):
+        padres.append(ruleta[random.randint(0, ruletaSize - 1)])
+    return padres
+
+
+def cruzarPadres(padres, ind, sol):
+    #ind (individuo), sol (solucion)
+    if random.random() < cross:
+        corte = random.randint(1, 29)
+        a = format(padres[ind], 'b').zfill(30)
+        b = format(padres[ind + 1], 'b').zfill(30)
+
+        a_head, a_tail = a[:corte], a[corte:]
+        b_head, b_tail = b[:corte], b[corte:]
+
+        sol[ind] = int(a_head + b_tail, 2)
+        sol[ind + 1] = int(b_head + a_tail, 2)
+    else:
+        sol[ind] = padres[ind]
+        sol[ind + 1] = padres[ind + 1]
+
+
+def mutarHijos(sol, ind):
+    if random.random() < mut:  # De la pareja el primer cromosoma
+        bit = random.randint(0, 29)
+        a = format(sol[ind], 'b').zfill(30)
+        bit_cambiado = '1' if a[bit] == '0' else '0'
+        sol[ind] = int(a[:bit] + bit_cambiado + a[bit + 1:], 2)
+    if random.random() < mut:  # De la pareja el segundo cromosoma
+        bit = random.randint(0, 29)
+        b = format(sol[ind + 1], 'b').zfill(30)
+        bit_cambiado = '1' if b[bit] == '0' else '0'
+        sol[ind + 1] = int(b[:bit] + bit_cambiado + b[bit + 1:], 2)
+
+
 def main():
     sol = []
     valor = []
@@ -49,45 +102,16 @@ def main():
     minimos = []
     promedios = []
 
-    for ind in range(popul):
-        sol.append(random.randint(0, coef))
-        valor.append(function(sol[ind]))
+    inicializar(sol, valor)  #Genera poblacion inicial aleatoria
     print('Valores Corrida: 1\n')
     mostrar_resul(valor, maximos, minimos, promedios)
+
     for ciclo in range(ciclos - 1):
-        ruleta = []
-        ruletaSize = 0
-        for ind in range(popul):
-            for p in range(round(fitness(valor, ind) * 100)):
-                ruleta.append(sol[ind])
-                ruletaSize += 1
-        valoresRuleta = []
-        for ind in range(popul):
-            valoresRuleta.append(ruleta[random.randint(0, ruletaSize - 1)])
+        ruleta, ruletaSize = generarRuleta(sol, valor)
+        padres = seleccionarPadres(ruleta, ruletaSize)
         for ind in range(0, popul, 2):
-            if random.random() < cross:
-                corte = random.randint(1, 29)
-                a = format(valoresRuleta[ind], 'b').zfill(30)
-                b = format(valoresRuleta[ind + 1], 'b').zfill(30)
-
-                a_head, a_tail = a[:corte], a[corte:]
-                b_head, b_tail = b[:corte], b[corte:]
-
-                sol[ind] = int(a_head + b_tail, 2)
-                sol[ind + 1] = int(b_head + a_tail, 2)
-            else:
-                sol[ind] = valoresRuleta[ind]
-                sol[ind + 1] = valoresRuleta[ind + 1]
-            if random.random() < mut:  # De la pareja el primer cromosoma
-                bit = random.randint(0, 29)
-                a = format(sol[ind], 'b').zfill(30)
-                bit_cambiado = '1' if a[bit] == '0' else '0'
-                sol[ind] = int(a[:bit] + bit_cambiado + a[bit + 1:], 2)
-            if random.random() < mut:  # De la pareja el segundo cromosoma
-                bit = random.randint(0, 29)
-                b = format(sol[ind + 1], 'b').zfill(30)
-                bit_cambiado = '1' if b[bit] == '0' else '0'
-                sol[ind + 1] = int(b[:bit] + bit_cambiado + b[bit + 1:], 2)
+            cruzarPadres(padres, ind, sol)
+            mutarHijos(sol, ind)
             valor[ind] = function(sol[ind])
             valor[ind + 1] = function(sol[ind + 1])
         print(f'Valores Corrida: {ciclo + 2}\n')

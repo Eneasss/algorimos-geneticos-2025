@@ -39,27 +39,27 @@ def graficar(maximos, minimos, promedios):
     plt.grid(True)
     plt.show()
 
+
 def inicializar(sol, valor):
     for ind in range(popul):
         sol.append(random.randint(0, coef))
         valor.append(function(sol[ind]))
 
 
-def generarTorneo(sol):
-    torneo = []
-    for ind in range(popul * 2):
-        torneo.append(sol[random.randint(0, popul - 1)])
-    return torneo
+def generarRuleta(sol, valor):
+    ruleta = []
+    ruletaSize = 0
+    for ind in range(popul):
+        for p in range(round(fitness(valor, ind) * 100)):
+            ruleta.append(sol[ind])
+            ruletaSize += 1
+    return ruleta, ruletaSize
 
 
-def seleccionarPadres(torneo):
+def seleccionarPadres(ruleta, ruletaSize):
     padres = []
-    for ind in range(0, popul * 2, 2):
-        a = torneo[ind]
-        b = torneo[ind + 1]
-        aVal = function(a)
-        bVal = function(b)
-        padres.append(a if aVal > bVal else b)
+    for ind in range(popul):
+        padres.append(ruleta[random.randint(0, ruletaSize - 1)])
     return padres
 
 
@@ -92,6 +92,14 @@ def mutarHijos(sol, ind):
         sol[ind + 1] = int(b[:bit] + bit_cambiado + b[bit + 1:], 2)
 
 
+def elegirElites(sol, valor):
+    # Guardar mejores individuos
+    individuos = list(zip(sol, valor))
+    individuos.sort(key=lambda x: x[1], reverse=True)  # Ordenar por fitness (valor)
+    elite = [individuos[0], individuos[1]]  # Los 2 mejores (mayor valor)
+    return elite
+
+
 def main():
     sol = []
     valor = []
@@ -101,13 +109,27 @@ def main():
     minimos = []
     promedios = []
 
-    inicializar(sol, valor)  #Genera poblacion inicial aleatoria
+    for ind in range(popul):
+        sol.append(random.randint(0, coef))
+        valor.append(function(sol[ind]))
     print('Valores Corrida: 1\n')
     mostrar_resul(valor, maximos, minimos, promedios)
     for ciclo in range(ciclos - 1):
-        torneo = generarTorneo(sol)
-        padres = seleccionarPadres(torneo)
-        for ind in range(0, popul, 2):
+        elite = elegirElites(sol, valor)
+        ruleta, ruletaSize = generarRuleta(sol, valor)
+        padres = seleccionarPadres(ruleta, ruletaSize)
+
+        # Agregar los elite al final y quitar los primeros 2 normales
+        sol.append(elite[0][0])
+        sol.append(elite[1][0])
+        valor.append(elite[0][1])
+        valor.append(elite[1][1])
+        sol.remove(sol[0])
+        sol.remove(sol[0])
+        valor.remove(valor[0])
+        valor.remove(valor[0])
+
+        for ind in range(0, popul - 2, 2):
             cruzarPadres(padres, ind, sol)
             mutarHijos(sol, ind)
             valor[ind] = function(sol[ind])
