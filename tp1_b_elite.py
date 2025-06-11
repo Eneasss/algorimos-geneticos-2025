@@ -6,7 +6,7 @@ coef = 2 ** 30 - 1
 cross = .75
 mut = .05
 popul = 10
-ciclos = 20
+ciclos = 100
 
 
 def function(x):

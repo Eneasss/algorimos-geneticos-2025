@@ -6,7 +6,7 @@ coef = 2 ** 30 - 1
 cross = .75
 mut = .05
 popul = 10
-ciclos = 20
+ciclos = 100
 
 
 def function(x):
@@ -109,9 +109,7 @@ def main():
     minimos = []
     promedios = []
 
-    for ind in range(popul):
-        sol.append(random.randint(0, coef))
-        valor.append(function(sol[ind]))
+    inicializar(sol, valor)  #Genera poblacion inicial aleatoria
     print('Valores Corrida: 1\n')
     mostrar_resul(valor, maximos, minimos, promedios)
     for ciclo in range(ciclos - 1):
@@ -129,7 +127,7 @@ def main():
         valor.remove(valor[0])
         valor.remove(valor[0])
 
-        for ind in range(0, popul - 2, 2):
+        for ind in range(0, popul - 2, 2):  #No se tienen en cuenta los ultimos 2 que son elite
             cruzarPadres(padres, ind, sol)
             mutarHijos(sol, ind)
             valor[ind] = function(sol[ind])
