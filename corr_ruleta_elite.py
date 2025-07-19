@@ -79,22 +79,57 @@ def FunFit(objetivo, fitness, total, min_val, max_val, prom):
     prom[1] = prom[0] / total[0]
 
 
-def Torneo(seleccion, fitness):
-    for j in range(10):
-        torneo = [] # fitness
-        postorneo = [] # posicion
-        for ind in range(4):
-            pos = random.randint(0, 9)
-            torneo.append(fitness[pos])
-            postorneo.append(pos)
-        ganador = torneo[0]
-        posganador = postorneo[0]
-        for i in range(1, 4):
-            if ganador < torneo[i]:
-                ganador = torneo[i]
-                posganador = postorneo[i]
-        seleccion[j] = posganador
+def Ruleta(seleccion, fitness, poblacion, pob_siguiente):
+    max1 = max2 = m1 = m2 = 0
+    ruleta = [0] * 120
+    rul = 0
+    fit = [0] * 10
+    i = 0
+    max_idx = 0
 
+    r = random.Random()
+
+    # Ajuste de valores de fitness
+    for c in range(10):
+        fit[c] = int(fitness[c] * 100)
+        if fit[c] == 0:
+            fit[c] = 1
+        if fit[c] > fit[max_idx]:
+            max_idx = c
+        i += fit[c]
+
+    if i < 100:
+        dif = 100 - i
+        fit[max_idx] += dif
+    elif i > 100:
+        dif = i - 100
+        fit[max_idx] -= dif
+
+    # Elitismo: seleccionar los dos mejores
+    for c in range(10):
+        if fit[c] >= max1:
+            max2 = max1
+            m2 = m1
+            max1 = fit[c]
+            m1 = c
+        elif fit[c] > max2:
+            max2 = fit[c]
+            m2 = c
+
+    for i in range(30):
+        pob_siguiente[i][0] = poblacion[i][m1]
+        pob_siguiente[i][1] = poblacion[i][m2]
+
+    # Construir ruleta
+    for c in range(10):
+        for _ in range(fit[c]):
+            ruleta[rul] = c
+            rul += 1
+
+    # Selección por ruleta (a partir de la posición 2)
+    for c in range(2, 10):
+        i = r.randint(0, 99)
+        seleccion[c] = ruleta[i]
 
 
 def CrossOver(poblacion, pob_siguiente, seleccion):
@@ -125,7 +160,7 @@ def Mutacion(pob_siguiente):
     for c in range(10):
         prob = random.randint(0, 100)
         if prob < PM:
-            pto = random.randint(0, 29)
+            pto = random.randint(1, 29)
             pob_siguiente[pto][c] = 1 - pob_siguiente[pto][c]  # invierte el bit
 
 
@@ -168,7 +203,7 @@ def main():
 
     for c in range(1, ciclos + 1):
         pob = c
-        Torneo(seleccion, fitness)
+        Ruleta(seleccion, fitness)
         CrossOver(poblacion, pob_siguiente, seleccion)
         Mutacion(pob_siguiente)
         ActualizarPob(poblacion, pob_siguiente)

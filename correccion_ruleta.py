@@ -120,7 +120,7 @@ def CrossOver(poblacion, pob_siguiente, seleccion):
         prob = random.randint(0, 100)
 
         if prob < PC:
-            pto = random.randint(0, 29)  # punto de cruce
+            pto = random.randint(1, 29)  # punto de cruce
             for i in range(pto):
                 pob_siguiente[i][c] = poblacion[i][pad1]
                 pob_siguiente[i][c + 1] = poblacion[i][pad2]
@@ -139,7 +139,7 @@ def Mutacion(pob_siguiente):
     for c in range(10):
         prob = random.randint(0, 100)
         if prob < PM:
-            pto = random.randint(0, 29)
+            pto = random.randint(1, 29)
             pob_siguiente[pto][c] = 1 - pob_siguiente[pto][c]  # invierte el bit
 
 

@@ -79,7 +79,24 @@ def FunFit(objetivo, fitness, total, min_val, max_val, prom):
     prom[1] = prom[0] / total[0]
 
 
-def Torneo(seleccion, fitness):
+def Torneo(seleccion, fitness, poblacion, pob_siguiente):
+    max1 = max2 = m1 = m2 = 0
+
+    # Elitismo: seleccionar los dos mejores
+    for c in range(10):
+        if fitness[c] >= max1:
+            max2 = max1
+            m2 = m1
+            max1 = fitness[c]
+            m1 = c
+        elif fitness[c] > max2:
+            max2 = fitness[c]
+            m2 = c
+
+    for i in range(30):
+        pob_siguiente[i][0] = poblacion[i][m1]
+        pob_siguiente[i][1] = poblacion[i][m2]
+
     for j in range(10):
         torneo = [] # fitness
         postorneo = [] # posicion
@@ -168,7 +185,7 @@ def main():
 
     for c in range(1, ciclos + 1):
         pob = c
-        Torneo(seleccion, fitness)
+        Torneo(seleccion, fitness, poblacion, pob_siguiente)
         CrossOver(poblacion, pob_siguiente, seleccion)
         Mutacion(pob_siguiente)
         ActualizarPob(poblacion, pob_siguiente)
