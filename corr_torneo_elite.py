@@ -171,7 +171,7 @@ def main():
     max_val = [0.0] * 2
     prom = [0.0] * 2
     seleccion = [0] * 10
-    ciclos = 20
+    ciclos = 100
 
     pob = 0
 
