@@ -97,7 +97,7 @@ def Torneo(seleccion, fitness, poblacion, pob_siguiente):
         pob_siguiente[i][0] = poblacion[i][m1]
         pob_siguiente[i][1] = poblacion[i][m2]
 
-    for j in range(10):
+    for j in range(2, 10):
         torneo = [] # fitness
         postorneo = [] # posicion
         for ind in range(4):
