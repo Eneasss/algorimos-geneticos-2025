@@ -7,11 +7,25 @@ class Mochila:
 
 
 class ConjuntoItems:
+    """
+        Representa un conjunto de ítems
+    """
     def __init__(self):
         self.items = []  # Lista de Item
         self.subconjuntos = []  # Lista de Subconjunto
 
     def generar_subconjuntos(self):
+        """
+        Genera todos los subconjuntos posibles de la lista de ítems actual
+        usando una representación con máscaras de bits.
+
+        Cada subconjunto se crea recorriendo todos los números binarios desde
+        0 hasta (2^n - 1), donde n es la cantidad de ítems. Si el bit i del
+        número está encendido, se incluye el ítem correspondiente en el
+        subconjunto.
+
+        El resultado se guarda en self.subconjuntos.
+        """
         n = len(self.items)
         power_set_count = 1 << n  # 2^n
 
