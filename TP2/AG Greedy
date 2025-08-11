@@ -1,14 +1,7 @@
 capacity = 4200
-class mochila:
-    def __init__(self, volumen):
-        self.volumen = float
 
-
-class items:
-    def __init__(self, volumen, valor):
-        self.volumen = float
-        self.valor = float
-        self.items = [
+# Lista de ítems: (índice, volumen, valor)
+items_list = [
     (1, 150, 20),
     (2, 325, 40),
     (3, 600, 50),
@@ -20,28 +13,33 @@ class items:
     (9, 930, 46),
     (10, 353, 28)
 ]
-# 1) calcular ratio para cada objeto        
-ratios= []
-for i, vol, val, ratio in items:
-    ratio = val/vol
-    ratio.append((i,vol,val,ratio))
-ratios_sorted= sorted(ratios, key=lambda x : x[3], reverse = True)
 
-# 2) greedy
+# 1) Calcular ratio para cada objeto (valor / volumen)
+ratios = []
+for i, vol, val in items_list:
+    ratios.append((i, vol, val, val / vol))
+
+# Ordenar por ratio descendente
+ratios_sorted = sorted(ratios, key=lambda x: x[3], reverse=True)
+
+# 2) Algoritmo greedy
 restante = capacity
-greedy_seleccionado =[]
+greedy_seleccionado = []
 val_tot_greedy = 0
 vol_tot_greedy = 0
 
-for i, vol, val, ratio in ratios_sorted
+for i, vol, val, ratio in ratios_sorted:
     if vol <= restante:
-        greedy_seleccionado.append((i,vol,val,ratio))
-        restante = restante - vol
-        val_tot_greedy = val_tot_greedy + val
-        vol_tot_greedy = vol_tot_greedy + vol
+        greedy_seleccionado.append((i, vol, val, ratio))
+        restante -= vol
+        val_tot_greedy += val
+        vol_tot_greedy += vol
 
-
-# 3) mostrar resultados
-print(" greedy -> valor:", val_tot_greedy, "volumen", vol_tot_greedy, "items", [s[0] for s in greedy_seleccionado])
+# 3) Mostrar resultados
+print(
+    "greedy -> valor:", val_tot_greedy,
+    "volumen:", vol_tot_greedy,
+    "items:", [s[0] for s in greedy_seleccionado]
+)
 
 
