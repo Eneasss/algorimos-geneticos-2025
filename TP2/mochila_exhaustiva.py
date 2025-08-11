@@ -27,13 +27,21 @@ class ConjuntoItems:
         El resultado se guarda en self.subconjuntos.
         """
         n = len(self.items)
-        power_set_count = 1 << n  # 2^n
+        power_set_count = 1 << n  # 2^n: usamos números binarios para representar cada subconjunto
 
+        # Iteramos a través de todos los números posibles desde 0 hasta 2^n - 1.
+        # Cada número (set_mask) actúa como una "máscara de bits" que representa un subconjunto único.
         for set_mask in range(power_set_count):
             subconjunto = Subconjunto()
+            # Para cada máscara, revisamos cada uno de los n ítems.
             for i in range(n):
+                # Esta es la operación clave: (1 << i) crea un número donde solo el i-ésimo bit es 1 (ej: 001, 010, 100).
+                # La operación AND a nivel de bits (&) comprueba si el i-ésimo bit está "encendido" en la máscara actual.
+                # Si el resultado es mayor que 0, significa que el ítem en la posición 'i' pertenece a este subconjunto.
                 if (set_mask & (1 << i)) > 0:
+                    # Agregamos el ítem correspondiente a nuestro subconjunto temporal.
                     subconjunto.items.append(self.items[i])
+            # Una vez que hemos comprobado todos los ítems para la máscara actual, añadimos el subconjunto completo a nuestra lista.
             self.subconjuntos.append(subconjunto)
 
 

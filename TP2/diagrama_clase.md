@@ -1,4 +1,5 @@
-###### Instalar Markdown Preview Mermaid Support (Es una extensión extensión)
+###### Instalar Markdown Preview Mermaid Support (Es una extensión para Visual Studio Code)
+
 ```mermaid
 classDiagram
     class Mochila {
