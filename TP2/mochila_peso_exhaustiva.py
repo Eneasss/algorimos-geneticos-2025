@@ -1,6 +1,6 @@
 class Mochila:
-    def __init__(self, volumen):
-        self.volumen = float(volumen)
+    def __init__(self, peso):
+        self.peso = float(peso)
 
 
 class ConjuntoItems:
@@ -43,8 +43,8 @@ class ConjuntoItems:
 
 
 class Item:
-    def __init__(self, volumen, valor):
-        self.volumen = float(volumen)
+    def __init__(self, peso, valor):
+        self.peso = float(peso)
         self.valor = float(valor)
 
 
@@ -52,11 +52,11 @@ class Subconjunto:
     def __init__(self):
         self.items = []  # Lista de Item
 
-    def volumen(self):
-        volumen_total = 0.0
+    def peso(self):
+        peso_total = 0.0
         for item in self.items:
-            volumen_total += item.volumen
-        return volumen_total
+            peso_total += item.peso
+        return peso_total
 
     def valor(self):
         valor_total = 0.0
@@ -78,7 +78,7 @@ class Controlador:
         mejor_valor = 0.0
 
         for subconjunto in subconjuntos:
-            if subconjunto.volumen() <= self.mochila.volumen:
+            if subconjunto.peso() <= self.mochila.peso:
                 valor = subconjunto.valor()
                 if valor > mejor_valor:
                     mejor_subconjunto = subconjunto
@@ -90,29 +90,22 @@ class Controlador:
 class Programa:
     @staticmethod
     def main():
-        mochila = Mochila(4200)
+        mochila = Mochila(3000)
         conjunto = ConjuntoItems()
         items = conjunto.items
-        items.append(Item(150, 20))
-        items.append(Item(325, 40))
-        items.append(Item(600, 50))
-        items.append(Item(805, 36))
-        items.append(Item(430, 25))
-        items.append(Item(1200, 64))
-        items.append(Item(770, 54))
-        items.append(Item(60, 18))
-        items.append(Item(930, 46))
-        items.append(Item(353, 28))
+        items.append(Item(1800, 72))
+        items.append(Item(600, 36))
+        items.append(Item(1200, 60))
 
         controlador = Controlador(mochila, conjunto)
         mejor_subconjunto = controlador.mejor_subconjunto()
 
         print("La solución contiene los siguientes ítems: ")
         for item in mejor_subconjunto.items:
-            print(f"Volumen: {item.volumen} cm3    Valor: ${item.valor}")
+            print(f"Peso: {item.peso} gr    Valor: ${item.valor}")
 
         print(
-            f"Volumen total: {mejor_subconjunto.volumen()} cm3 "
+            f"Peso total: {mejor_subconjunto.peso()} gr "
             f"Valor total: ${mejor_subconjunto.valor()}"
         )
 
